@@ -1,0 +1,151 @@
+$dark-gray : rgb(224, 224, 224);
+$light-gray : rgb(235, 235, 235);
+
+#halo-box {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  height: 5em;
+  width: 5em;
+
+  .flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .circle {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    border-radius: 100%;
+    border-style: solid;
+    border-width: 0.5em;
+  }
+
+  .outer,
+  .inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .outer {
+    border-color: $light-gray;
+  }
+
+  .inner {
+    width: calc(100% - 1em);
+    left: 0.5em;
+    height: calc(100% - 1em);
+    top: 0.5em;
+    border-color: $dark-gray;
+  }
+
+  .reset {
+
+    .outer,
+    .inner {
+      transition: 1s;
+    }
+  }
+
+  .breathe {
+    .outer {
+      border-width: 1em;
+    }
+
+    .inner {
+      animation: Breathe 1s infinite alternate;
+    }
+  }
+
+  .loading {
+    .outer {
+      width: calc(100% - 1em);
+      left: 0.5em;
+      height: calc(100% - 1em);
+      top: 0.5em;
+      animation: FlipX 1s infinite alternate;
+    }
+
+    .inner {
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      animation: 1s FlipY 1s infinite alternate;
+    }
+  }
+
+  .tip {
+    position: absolute;
+    top: -3.5em;
+    right: 0;
+    color: #888;
+    height: 1.5em;
+    padding: 0.5em 0.9em;
+    background-color: $light-gray;
+    border-radius: 0.5em;
+    border-color: $light-gray;
+
+    &::after {
+      content: "";
+      position: absolute;
+      right: 1.5em;
+      bottom: -0.5em;
+      width: 2em;
+      box-sizing: border-box;
+      border: none;
+      border-top: $light-gray 1em solid;
+      border-left: transparent 1em solid;
+      border-right: transparent 1em solid;
+      background-color: transparent;
+    }
+
+    input {
+      width: 7em;
+    }
+  }
+
+}
+
+@keyframes Breathe {
+  from {
+    width: calc(100% - 1em);
+    height: calc(100% - 1em);
+    left: 0.5em;
+    top: 0.5em;
+  }
+
+  to {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+  }
+}
+
+@keyframes FlipX {
+  from {
+    transform: rotateX(0);
+  }
+
+  to {
+    transform: rotateX(180deg);
+  }
+}
+
+@keyframes FlipY {
+  from {
+    transform: rotateY(0);
+  }
+
+  to {
+    transform: rotateY(180deg);
+  }
+}

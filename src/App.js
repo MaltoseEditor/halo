@@ -1,12 +1,12 @@
 import React from 'react';
 
-import './App.css';
+import './App.scss';
 
 
-String.prototype.gblen = function () {
+function gblen(str) {
   var len = 0;
-  for (var i = 0; i < this.length; i++) {
-    if (this.charCodeAt(i) > 127 || this.charCodeAt(i) === 94) {
+  for (var i = 0; i < str.length; i++) {
+    if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {
       len++;
     } else {
       len += 0.5;
@@ -38,19 +38,22 @@ class App extends React.Component {
     this.state = {
       nowNumber: 0,
       maxNumber: 2,
-      lock: false
+
+      status: ""
     }
   }
 
+  lock = false;
+
   changeNumber = (timeout) => {
     setTimeout(() => {
-      const { nowNumber, maxNumber, lock } = this.state;
-      if (lock) {
-        setTimeout(this.changeNumber, 500);
+      const { maxNumber } = this.state;
+      if (this.lock) {
+        this.changeNumber(500);
         return;
       }
       this.setState({ nowNumber: getRandomInt(0, maxNumber) })
-      setTimeout(this.changeNumber, 3000);
+      this.changeNumber(3000);
     }, timeout);
   }
 
@@ -67,27 +70,51 @@ class App extends React.Component {
 
   componentDidMount() {
     this.changeNumber(3000);
+    setTimeout(() => {
+      const changeStatus = () => {
+        setTimeout(() => {
+          const newStatus = ['loading', 'breathe'][getRandomInt(0, 2)];
+          if (newStatus !== this.state.status) {
+            setTimeout(() => {
+              this.setState({ status: "reset " + this.state.status })
+              setTimeout(() => {
+                this.setState({ status: "reset" })
+                setTimeout(() => {
+                  this.setState({ status: "reset " + newStatus })
+                  setTimeout(() => {
+                    this.setState({ status: newStatus })
+                    changeStatus();
+                  }, 1000)
+                }, 1000)
+              }, 1000)
+            }, 0)
+          } else {
+            changeStatus();
+          }
+        }, getRandomInt(1, 4) * 2000);
+      }
+      changeStatus();
+    }, 0)
   }
 
   render() {
-    const { nowNumber, maxNumber } = this.state;
+    const { nowNumber, status } = this.state;
     const sentence = randomText();
     return (
-      <div id="halo" className="flex"
-        onMouseEnter={e => this.setState({ lock: true })}
-        onMouseLeave={e => this.setState({ lock: false })}
+      <div id="halo-box" className="flex"
+        onMouseEnter={e => this.lock = true}
+        onMouseLeave={e => this.lock = false}
       >
-        <div className="circle dark-gray-border outer" onClick={e => { window.scrollTo(0, 0) }}>
-          <div className="circle light-gray-border inner">
-
-          </div>
+        <div className={status + " halo-instance"} onClick={e => { window.scrollTo(0, 0) }}>
+          <div className="circle outer"></div>
+          <div className="circle inner"></div>
         </div>
 
         <div className="tips">
           {
             nowNumber === 0 && (
               <div className="tip flex">
-                <span style={{ width: sentence.gblen() + "em" }}>
+                <span style={{ width: gblen(sentence) + "em" }}>
                   {sentence}
                 </span>
               </div>
